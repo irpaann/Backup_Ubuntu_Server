@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h3 class="mb-4 text-center">Register</h3>
+
+<div class="container d-flex justify-content-center">
+    <div class="card shadow-sm p-4" style="max-width: 500px; width: 100%; border-radius: 12px;">
+
+        <form method="POST">
+
+            <!-- Nama -->
+            <div class="mb-3">
+                <label class="form-label">Nama Lengkap</label>
+                <input name="name" type="text" class="form-control" placeholder="Masukkan nama" required>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input name="email" type="email" class="form-control" placeholder="Masukkan email" required>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input name="password" type="password" class="form-control" placeholder="Masukkan password" required>
+            </div>
+
+            <!-- Confirm Password (gunakan name berbeda) -->
+            <div class="mb-3">
+                <label class="form-label">Confirm Password</label>
+                <input name="confirm_password" type="password" class="form-control" placeholder="Ulangi password" required>
+            </div>
+
+            <!-- Tombol -->
+            <button class="btn btn-success w-100" type="submit">Register</button>
+
+        </form>
+
+        <div class="form-text mt-2 text-center">
+            sudah punya akun? <a href="/login">Login</a>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  # 1. Gateway (Nginx)
+  gateway:
+    build: ./nginx
+    container_name: gateway_nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - ml_engine
+      - user_app
+    networks:
+      - public_net
+      - internal_net
+    restart: unless-stopped
+
+  # 2. ML Security Engine & Dashboard
+  ml_engine:
+    build: ./sf_dashboard-monitoring
+    container_name: ml_security_engine
+    environment:
+      - INSPECTION_MODE=static
+    ports:
+      - "5001:5000"
+    volumes:
+      - sqlite_data:/app/database
+    networks:
+      - public_net
+      - internal_net
+    restart: unless-stopped
+
+  # 3. User Web Application (Flask)
+  user_app:
+    build: ./sf_tugas_akhir_testing_app
+    container_name: web_user_app
+    depends_on:
+      - db
+    environment:
+      - IS_DOCKER=true
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=webtesting
+    networks:
+      - internal_net
+    restart: unless-stopped
+
+  # 4. Database MySQL
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=webtesting
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database/webtesting.sql:/docker-entrypoint-initdb.d/webtesting.sql
+    networks:
+      - internal_net
+    restart: unless-stopped
+
+networks:
+  public_net:
+  internal_net:
+    internal: true
+
+volumes:
+  db_data:
+  sqlite_data:

@@ -1,0 +1,71 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Blacklisted IP{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0">Blacklisted IP</h4>
+    </div>
+
+    <!-- STATS -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Total</h6>
+                    <h3 id="statTotal">0</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Active</h6>
+                    <h3 class="text-danger" id="statActive">0</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Expired</h6>
+                    <h3 class="text-secondary" id="statExpired">0</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover mb-0 align-middle">
+                    <thead class="table-secondary small">
+                        <tr>
+                            <th>IP</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Blocked At</th>
+                            <th>Expires</th>
+                            <th>Hits</th>
+                            <th>Last Seen</th>
+                            <th>Logs</th>
+                        </tr>
+                    </thead>
+                    <tbody id="blacklistTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/blacklist.js') }}"></script>
+{% endblock %}

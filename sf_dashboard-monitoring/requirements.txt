@@ -1,0 +1,7 @@
+Flask==3.0.0      # (Atau FastAPI, tergantung framework apa yang dipakai ML Engine-mu)
+requests
+pandas            # Wajib untuk pre-processing data (membaca log, ekstraksi fitur)
+numpy             # Wajib sebagai pendukung komputasi numerik
+scikit-learn      # INI YANG PALING VITAL! (Untuk menjalankan model Random Forest & OCC)
+joblib            # Library standar untuk meload file .pkl
+python-dotenv

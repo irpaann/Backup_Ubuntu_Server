@@ -1,0 +1,85 @@
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+}
+
+/* TABLE */
+table {
+  width: 100%;
+  background: white;
+  border-collapse: collapse;
+}
+
+th {
+  background: #222;
+  color: white;
+}
+
+td, th {
+  border: 1px solid #ccc;
+  padding: 6px;
+}
+
+pre {
+  white-space: pre-wrap;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+}
+
+/* SIDEBAR */
+
+/* SIDEBAR BASE */
+.sidebar {
+    background: #ffffff;
+    border-right: 1px solid #dee2e6;
+    min-height: calc(100vh - 70px);
+    padding: 1rem;
+    position: sticky;
+}
+
+
+.sidebar .nav-link {
+  color: #495057;
+  border-radius: .375rem;
+  padding: .5rem .75rem;
+}
+
+.sidebar .nav-link:hover {
+  background: #f1f3f5;
+}
+
+.sidebar .nav-link.active {
+  background: #e7f1ff;
+  color: #0d6efd;
+  font-weight: 500;
+}
+
+/* Mencegah teks panjang merusak tabel */
+.table td {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/* Warna tab saat aktif (Gaya Lama yang Diperhalus) */
+.nav-link.active {
+    background-color: #e7f1ff !important; /* Biru sangat muda dari sidebar base kamu */
+    color: #0d6efd !important;           /* Teks biru tajam */
+    font-weight: 500;
+    border-radius: .375rem;
+}
+
+/* Warna icon saat aktif agar ikut menjadi biru */
+.nav-link.active i {
+    color: #0d6efd !important;
+}
+
+/* Menghilangkan hover saat sudah aktif agar tidak flicker */
+.nav-link.active:hover {
+    background-color: #e7f1ff;
+}

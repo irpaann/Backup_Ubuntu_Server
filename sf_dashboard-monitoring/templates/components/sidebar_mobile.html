@@ -1,0 +1,31 @@
+<div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarMobile">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title">Monitoring</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+
+    <div class="offcanvas-body">
+        <nav class="nav flex-column gap-2">
+            <a class="nav-link {{ 'active' if request.endpoint == 'dashboard' else '' }}" 
+               href="{{ url_for('dashboard') }}">
+                <i class="fas fa-home me-2"></i> Dashboard
+            </a>
+
+            <a class="nav-link {{ 'active' if request.endpoint == 'logs' else '' }}" 
+               href="{{ url_for('logs') }}">
+                <i class="fas fa-list me-2"></i> Logs
+            </a>
+
+            <a class="nav-link {{ 'active' if request.endpoint == 'block_ip' else '' }}" 
+               href="{{ url_for('block_ip') }}">
+                <i class="fas fa-user-slash me-2"></i> Black List
+            </a>
+            
+            <hr class="text-secondary">
+            
+            <a class="nav-link text-danger" href="{{ url_for('logout') }}">
+                <i class="fas fa-sign-out-alt me-2"></i> Logout
+            </a>
+        </nav>
+    </div>
+</div>

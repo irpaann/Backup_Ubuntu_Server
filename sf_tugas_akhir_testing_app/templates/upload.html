@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h3 class="mb-4 text-center">Upload Produk</h3>
+
+<div class="container d-flex justify-content-center">
+    <div class="card shadow-sm p-4" style="max-width: 600px; width: 100%; border-radius: 12px;">
+
+        <form method="POST" enctype="multipart/form-data">
+
+            <!-- Nama Produk -->
+            <div class="mb-3">
+                <label class="form-label">Nama Produk</label>
+                <input name="name" class="form-control" placeholder="Masukkan nama produk" required>
+            </div>
+
+            <!-- Harga -->
+            <div class="mb-3">
+                <label class="form-label">Harga</label>
+                <input name="price" class="form-control" placeholder="Masukkan Harga" required>
+            </div>
+
+
+            <!-- Deskripsi -->
+            <div class="mb-3">
+                <label class="form-label">Deskripsi Produk</label>
+                <textarea name="description" class="form-control" rows="4" placeholder="Masukkan deskripsi produk..." required></textarea>
+            </div>
+            
+            <!-- File Upload -->
+            <div class="mb-3">
+                <label class="form-label">Upload Gambar</label>
+                <input type="file" name="file" class="form-control" required>
+            </div>
+
+            <!-- Tombol -->
+            <button class="btn btn-info w-100" type="submit">Upload Produk</button>
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

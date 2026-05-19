@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h3 class="mb-4 text-center">Contact Us</h3>
+
+<div class="container d-flex justify-content-center">
+    <div class="card shadow-sm p-4" style="max-width: 600px; width: 100%; border-radius: 12px;">
+
+        <form method="POST">
+
+            <!-- Nama -->
+            <div class="mb-3">
+                <label class="form-label">Nama</label>
+                <input name="name" class="form-control" placeholder="Masukkan nama Anda" required>
+            </div>
+
+            <!-- Pesan -->
+            <div class="mb-3">
+                <label class="form-label">Pesan</label>
+                <textarea name="message" class="form-control" rows="4" placeholder="Tulis pesan Anda..." required></textarea>
+            </div>
+
+            <!-- Tombol Submit -->
+            <button class="btn btn-warning w-100" type="submit">Submit</button>
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

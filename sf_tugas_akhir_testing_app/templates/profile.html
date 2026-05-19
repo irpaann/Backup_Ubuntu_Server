@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block title %}Profil{% endblock %}
+
+{% block content %}
+<h2>Profil Anda</h2>
+<hr>
+
+<div class="card p-4" style="max-width: 500px;">
+    <form action="/profile/update" method="POST">
+
+        <div class="mb-3">
+            <label class="form-label">Nama</label>
+            <input type="text" name="name" class="form-control" value="{{ user.name }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" value="{{ user.email }}" disabled>
+        </div>
+
+        <button class="btn btn-primary">Simpan Perubahan</button>
+    </form>
+</div>
+
+{% endblock %}

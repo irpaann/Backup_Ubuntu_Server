@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2 class="mb-4 text-center">Halaman Utama</h2>
+<p class="text-center mb-5">Selamat datang di Web Testing.</p>
+
+<div class="container">
+    <h2 class="mb-4">Daftar Produk</h2>
+
+    <div class="row">
+        {% for p in products %}
+        <div class="col-md-3 col-sm-6 mb-4">
+            <div class="card h-100">
+
+                <!-- Gambar -->
+                <img src="{{ url_for('static', filename='uploads/' ~ p.image) | safe }}"
+                     class="card-img-top product-img">
+
+                <!-- Body -->
+                <div class="card-body">
+                    <h5>{{ p.name }}</h5>
+
+                    <p>{{ p.description | safe }}</p>
+
+                    <p class="mt-2"><b>Rp {{ p.price }}</b></p>
+
+                    <a href="{{ url_for('product.detail', product_id=p.id) }}"
+                       class="btn btn-primary btn-sm">
+                        Lihat Produk
+                    </a>
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

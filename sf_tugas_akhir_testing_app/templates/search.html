@@ -1,0 +1,7 @@
+{% extends "layout.html" %}
+{% block content %}
+{% if q %}
+<hr>
+<p>Hasil pencarian untuk: <b>{{ q|safe }}</b></p>
+{% endif %}
+{% endblock %}

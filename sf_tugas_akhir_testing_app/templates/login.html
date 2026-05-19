@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow-sm" style="width: 22rem; border-radius: 12px;">
+        <div class="card-body">
+            <h3 class="text-center mb-4">Login</h3>
+            {% if error %}
+                <p style="color: red; font-weight: bold;">{{ error }}</p>
+            {% endif %}
+            <form method="POST">
+                <div class="mb-3">
+                    <input name="email" type="text" class="form-control" placeholder="username atau email" required>
+                </div>
+
+                <div class="mb-3">
+                    <input name="password" type="password" class="form-control" placeholder="Password" required>
+                </div>
+                <button class="btn btn-primary w-100" type="submit">Login</button>
+            </form>
+            <div class="form-text">belum punya akun? <a href="/register">Registrasi</a> </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

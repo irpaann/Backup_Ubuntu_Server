@@ -1,0 +1,32 @@
+/* ==============================
+   PRODUCT CARD FIX (RAPI & SERAGAM)
+   ============================== */
+
+/* Card tinggi sama */
+.card {
+    height: 100%;
+}
+
+/* Gambar produk seragam */
+.product-img {
+    width: 100%;
+    height: 180px;          /* KUNCI tinggi gambar */
+    object-fit: cover;      /* Potong tengah, tidak gepeng */
+}
+
+/* Body card fleksibel */
+.card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Batasi deskripsi agar card tidak kepanjangan */
+.card-body p {
+    max-height: 48px;       /* ±2–3 baris */
+    overflow: hidden;
+}
+
+/* Tombol selalu di bawah */
+.card-body .btn {
+    margin-top: auto;
+}

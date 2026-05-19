@@ -1,0 +1,123 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Monitoring Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header">
+            <h5 class="mb-0">Recent Logs (Compact)</h5>
+
+            <div class="card mb-3">
+                <div class="card-body py-2">
+                    <div class="row g-2 align-items-end">
+
+                        <div class="col-6 col-md-2">
+                            <label class="form-label small">IP</label>
+                            <input id="filterIp" type="text" class="form-control form-control-sm">
+                        </div>
+
+                        <div class="col-6 col-md-2">
+                            <label class="form-label small">Method</label>
+                            <select id="filterMethod" class="form-select form-select-sm">
+                                <option value="">All</option>
+                                <option value="GET">GET</option>
+                                <option value="POST">POST</option>
+                            </select>
+                        </div>
+
+                        <div class="col-6 col-md-2">
+                            <label class="form-label small">Status</label>
+                            <select id="filterStatus" class="form-select form-select-sm">
+                                <option value="">All</option>
+                                <option value="200">200</option>
+                                <option value="404">404</option>
+                                <option value="500">500</option>
+                            </select>
+                        </div>
+
+                        <div class="col-6 col-md-3">
+                            <label class="form-label small">From</label>
+                            <input id="filterStart" type="datetime-local" class="form-control form-control-sm">
+                        </div>
+
+                        <div class="col-6 col-md-3">
+                            <label class="form-label small">To</label>
+                            <input id="filterEnd" type="datetime-local" class="form-control form-control-sm">
+                        </div>
+
+                        <div class="col-6 col-md-2">
+                            <button class="btn btn-sm btn-primary w-100" onclick="loadLogs();loadCharts();">
+                                Apply
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
+                <table id="logTable" class="table table-sm table-striped table-hover mb-0 align-middle">
+                    <thead class="table-secondary small">
+                        <tr>
+                            <th>ID</th>
+                            <th>Time</th>
+                            <th>IP</th>
+                            <th>Method</th>
+                            <th>Status</th>
+                            <th>Path</th>
+                            <th>Full URL</th>
+                            <th>Payload</th>
+                            <th>Attack Type</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="container px-3">
+    <div class="row g-3">
+
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>Top 5 Requesting IPs</h5>
+                    <canvas id="chartIPs"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>Request Methods</h5>
+                    <canvas id="chartMethods"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>Status Codes</h5>
+                    <canvas id="chartStatus"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

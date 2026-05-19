@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Aplikasi Testing{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+<header>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+
+            <!-- Nama pengguna -->
+            <a class="navbar-brand" href="/">
+                {% if session.get("user_name") %}
+                    {{ session.get("user_name") }}
+                {% else %}
+                    App Test
+                {% endif %}
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+
+                <!-- LEFT MENU -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+
+                    {% if session.get("user") %}
+                        <li class="nav-item">
+                            <a class="nav-link text-primary" href="/upload">Upload Produk</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/profile">Profil</a>
+                        </li>
+
+                    {% else %}
+                        <!-- Guest -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/contact">Kontak</a>
+                        </li>
+                    {% endif %}
+                </ul>
+
+                <!-- RIGHT MENU -->
+                <ul class="navbar-nav">
+
+                    {% if session.get("user") %}
+                        <!-- Search hanya jika login -->
+                        <form class="d-flex me-3" action="/search" method="GET">
+                            <input class="form-control me-2" type="search" name="q" placeholder="Cari produk">
+                            <button class="btn btn-outline-success">Search</button>
+                        </form>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-danger" href="/logout">Logout</a>
+                        </li>
+
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">Login</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/register">Register</a>
+                        </li>
+                    {% endif %}
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="container mt-4">
+{% block content %}{% endblock %}
+</main>
+
+<footer class="text-center mt-4 mb-3">
+    <p>&copy; 2025 Aplikasi Anda</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

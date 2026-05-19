@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | WAF Admin Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/dist/css/all.min.css">
+    <style>
+        body {
+            background-color: #0f172a; /* Dark Navy ala Dashboard */
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .login-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .brand-logo {
+            font-size: 2.5rem;
+            color: #38bdf8; /* Biru Cyber */
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        .login-title {
+            color: #f8fafc;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+        .form-label { color: #94a3b8; }
+        .form-control {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            color: #f8fafc;
+        }
+        .form-control:focus {
+            background-color: #0f172a;
+            border-color: #38bdf8;
+            color: #fff;
+            box-shadow: 0 0 0 0.25rem rgba(56, 189, 248, 0.25);
+        }
+        .btn-login {
+            background-color: #38bdf8;
+            border: none;
+            font-weight: 600;
+            padding: 0.7rem;
+            transition: 0.3s;
+        }
+        .btn-login:hover {
+            background-color: #0ea5e9;
+            transform: translateY(-2px);
+        }
+        #loginAlert { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <div class="brand-logo">
+        <i class="fas fa-shield-alt"></i>
+    </div>
+    <h4 class="login-title">WAF Administrator</h4>
+
+    <div id="loginAlert" class="alert alert-danger py-2 small" role="alert">
+        Username atau password salah!
+    </div>
+
+    <form id="loginForm">
+        <div class="mb-3">
+            <label for="username" class="form-label small">Username</label>
+            <div class="input-group">
+                <span class="input-group-text bg-dark border-secondary text-secondary"><i class="fas fa-user"></i></span>
+                <input type="text" class="form-control" id="username" placeholder="Masukkan username" required>
+            </div>
+        </div>
+        <div class="mb-4">
+            <label for="password" class="form-label small">Password</label>
+            <div class="input-group">
+                <span class="input-group-text bg-dark border-secondary text-secondary"><i class="fas fa-lock"></i></span>
+                <input type="password" class="form-control" id="password" placeholder="Masukkan password" required>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-login w-100 text-white">
+            MASUK KE DASHBOARD
+        </button>
+    </form>
+    
+    <div class="mt-4 text-center">
+        <small class="text-muted">WAF System v1.0 &copy; 2026</small>
+    </div>
+</div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const alertBox = document.getElementById('loginAlert');
+
+        try {
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                // Berhasil login, arahkan ke dashboard
+                window.location.href = '/dashboard';
+            } else {
+                // Gagal login
+                alertBox.style.display = 'block';
+                alertBox.innerText = result.message || "Login Gagal";
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+            alertBox.style.display = 'block';
+            alertBox.innerText = "Gagal menghubungi server";
+        }
+    });
+</script>
+
+</body>
+</html>

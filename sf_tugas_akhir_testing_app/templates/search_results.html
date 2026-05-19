@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2 class="text-center mb-4">Hasil Pencarian: {{ q | safe }}</h2>
+
+{% if results|length == 0 %}
+    <p class="text-center text-danger">Tidak ada produk ditemukan.</p>
+{% endif %}
+
+<div class="container">
+    <div class="row g-4 justify-content-center">
+        {% for p in results %}
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm">
+                <img src="{{ url_for('static', filename='uploads/' ~ p.image) | safe }}" class="card-img-top">
+                <div class="card-body">
+                    <h5>{{ p.name | safe }}</h5>
+                    <p>{{ p.description | safe }}</p>
+                    <p><b>Rp {{ p.price | safe }}</b></p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

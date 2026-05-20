@@ -236,7 +236,13 @@ def register_api(app):
 
     @app.route("/api/blacklist/check", methods=["GET"])
     def check_ip():
-        ip = request.args.get("ip")
+        # Nginx auth_request biasanya mengirimkan IP asli lewat header atau argumen
+        # Kita ambil dari argumen ?ip=... atau dari header X-Real-IP yang diteruskan Nginx
+        ip = request.args.get("ip") or request.headers.get("X-Real-IP")
+        
+        if not ip:
+            return jsonify({"is_blocked": False}), 200
+
         db = get_db()
         
         # 1. Bersihkan yang sudah expired dulu
@@ -249,20 +255,31 @@ def register_api(app):
 
         # 2. Cek apakah IP masih aktif diblokir
         row = db.execute(
-            "SELECT reason, total_hits FROM blacklist_ip WHERE ip = ? AND is_active = 1", 
+            "SELECT id, reason, total_hits FROM blacklist_ip WHERE ip = ? AND is_active = 1", 
             (ip,)
         ).fetchone()
         
         if row:
-            # 3. LOGIKA TAMBAHAN: Jika dia mencoba akses saat diblokir,
+            # 🛑 IP TERBLOKIR: Update total_hits dan last_seen langsung di sini!
+            # Karena Nginx akan langsung memblokir, request tidak akan pernah sampai ke endpoint /log
+            db.execute("""
+                UPDATE blacklist_ip 
+                SET total_hits = total_hits + 1,
+                    last_seen = DATETIME('now', '+8 hours'),
+                    expires_at = DATETIME(expires_at, '+10 seconds')
+                WHERE id = ?
+            """, (row["id"],))
+            db.commit()
+
+            # Kembalikan status 403 Forbidden agar Nginx langsung menjatuhkan request
             return jsonify({
                 "is_blocked": True, 
                 "reason": row["reason"],
-                "total_hits": row["total_hits"] + 1 # Mengirim jumlah hit terbaru
-            }), 200
+                "total_hits": row["total_hits"] + 1
+            }), 403
         
+        # 🟢 IP AMAN: Izinkan lewat
         return jsonify({"is_blocked": False}), 200
-
 
     @app.route("/api/blacklist/stats")
     def api_blacklist_stats():

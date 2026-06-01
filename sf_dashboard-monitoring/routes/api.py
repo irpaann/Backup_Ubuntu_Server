@@ -236,10 +236,13 @@ def register_api(app):
 
     @app.route("/api/blacklist/check", methods=["GET"])
     def check_ip():
-        # Nginx auth_request biasanya mengirimkan IP asli lewat header atau argumen
-        # Kita ambil dari argumen ?ip=... atau dari header X-Real-IP yang diteruskan Nginx
-        ip = request.args.get("ip") or request.headers.get("X-Real-IP")
+       # Ambil IP dari parameter URL, jika tidak ada cek X-Forwarded-For, jika tidak ada baru X-Real-IP
+        ip = request.args.get("ip") or request.headers.get("X-Forwarded-For") or request.headers.get("X-Real-IP")
         
+        # Jika header X-Forwarded-For berisi koma (misal: "IP_User, IP_Proxy"), ambil IP pertama saja
+        if ip and "," in ip:
+            ip = ip.split(",")[0].strip()
+            
         if not ip:
             return jsonify({"is_blocked": False}), 200
 
@@ -400,23 +403,32 @@ def register_api(app):
         })
     
 
-    @app.route("/api/stats/methods")
-    def stats_methods():
+    @app.route("/api/stats/hourly")
+    def stats_hourly():
         db = get_db()
         where, params = build_filters(request)
 
+        # Query untuk menghitung jumlah request per jam (00-23)
         rows = db.execute(f"""
-            SELECT method, COUNT(*) AS total
+            SELECT strftime('%H', timestamp) AS hour, COUNT(*) AS total
             FROM logs
             {where}
-            GROUP BY method
+            GROUP BY hour
+            ORDER BY hour ASC
         """, params).fetchall()
 
-        return jsonify({
-            "labels": [r["method"] for r in rows],
-            "values": [r["total"] for r in rows]
-        })
+        # Inisialisasi template 24 jam dengan nilai 0 agar jam yang kosong tetap muncul
+        hourly_data = {f"{i:02d}:00": 0 for i in range(24)}
+        
+        for r in rows:
+            if r["hour"]:
+                hourly_data[f"{int(r['hour']):02d}:00"] = r["total"]
 
+        return jsonify({
+            "labels": list(hourly_data.keys()),
+            "values": list(hourly_data.values())
+        })
+        
     @app.route("/api/stats/status")
     def stats_status():
         db = get_db()

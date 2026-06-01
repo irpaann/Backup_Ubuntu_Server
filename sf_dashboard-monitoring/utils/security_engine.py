@@ -29,8 +29,8 @@ class SecurityEngine:
                 self.scaler = joblib.load(os.path.join('models/occ_models', '9.2_scaler_waf.pkl'))
                 
                 # 2. Load Classification Models (Random Forest V6)
-                self.rf_model = joblib.load(os.path.join('models/rf_models', 'model_random_forest_AttacksOnly_V92.pkl'))
-                self.rf_columns = joblib.load(os.path.join('models/rf_models', 'model_columns_AttacksOnly_V92.pkl'))
+                self.rf_model = joblib.load(os.path.join('models/rf_models', 'model_random_forest_AttacksOnly_V93.pkl'))
+                self.rf_columns = joblib.load(os.path.join('models/rf_models', 'model_columns_AttacksOnly_V93.pkl'))
                 
                 print(f"✅ SecurityEngine: MODE ML AKTIF (OCC & RF Loaded)")
             except Exception as e:
@@ -121,7 +121,7 @@ class SecurityEngine:
             'entropy': f_entropy, 'time_diff': f_time, 'is_login_path': f_login, 
             'traversal_count': f_traversal, 'has_sensitive_file': f_sensitive, 'is_url_encoded': f_encoded
         }
-
+        
     def extract_rf_features(self, payload, path, time_diff, req_count, count_401, ratio_401):
         raw_payload = str(payload).lower() if pd.notna(payload) and str(payload).lower() != "none" else ""
         path_str = str(path).lower()
@@ -130,6 +130,9 @@ class SecurityEngine:
         f_payload_length = float(len(raw_payload))
         
         return {
+            # =================================================================
+            # METRIK UTAMA & DETEKSI PATH TRAVERSAL (DIJAMIN TETAP AKURAT)
+            # =================================================================
             'payload_length': f_payload_length,
             'dot_count': float(full_str.count('.')),
             'total_slash': float(full_str.count('/')),
@@ -137,17 +140,28 @@ class SecurityEngine:
             'percent_count': float(full_str.count('%')),
             'is_encoded': 1.0 if '%' in raw_payload else 0.0,
             'double_dot_count': float(full_str.count('..')),
-            'has_sensitive_word': 1.0 if any(w in full_str for w in ['etc', 'passwd', 'cmd.exe', 'system32']) else 0.0,
+            'has_sensitive_word': 1.0 if any(w in full_str for w in ['etc', 'passwd', 'shadow', 'boot.ini', 'win.ini', 'cmd.exe', 'system32']) else 0.0,
             'non_alphanum_ratio': float(len(re.findall(r'[^a-zA-Z0-9\s]', raw_payload)) / f_payload_length) if f_payload_length > 0 else 0.0,
-            'request_count': float(req_count),               # <--- Diisi dinamis dari Tracker IP
+            
+            # =================================================================
+            # TRACKER DINAMIS IP (KUNCI UTAMA BRUTE FORCE - TETAP DIJAGA)
+            # =================================================================
+            'request_count': float(req_count),
             'unique_payload_count': 1.0,
-            'status_401_count': float(count_401),            # <--- Diisi dinamis dari Tracker IP
+            'status_401_count': float(count_401),
             'avg_time_diff': float(time_diff),
-            'status_401_ratio': float(ratio_401),            # <--- Diisi dinamis dari Tracker IP
-            'special_char_count': float(len(re.findall(r"[\'\;\(\)\[\]\<\>\=\+\-\-\{\}\.\/\\]", raw_payload))),
-            'keyword_count': float(sum(1 for k in ['select', 'union', 'script', 'alert', 'onerror'] if k in raw_payload)),
+            'status_401_ratio': float(ratio_401),
             'space_count': float(raw_payload.count(' ') + raw_payload.count('%20')),
-            'digit_count': float(len(re.findall(r'\d', raw_payload)))
+            'digit_count': float(len(re.findall(r'\d', raw_payload))),
+
+            # =================================================================
+            # PEMISAHAN TOTAL & LOGIS (KHUSUS SQLi vs XSS)
+            # =================================================================
+            'sqli_spec_chars': float(len(re.findall(r"[\'\"\;\|\&\#\*]", raw_payload))),
+            'xss_spec_chars': float(len(re.findall(r"[\<\>\[\]\{\}\(\)]", raw_payload))),
+            'has_tag_structure': 1.0 if '<' in raw_payload and '>' in raw_payload else 0.0,
+            'sql_keyword_only': float(sum(1 for k in ['select', 'union', 'insert', 'update', 'delete', 'drop', 'where', 'and', 'or'] if k in raw_payload)),
+            'xss_keyword_only': float(sum(1 for k in ['script', 'alert', 'onerror', 'onload', 'svg', 'javascript:', 'eval', 'iframe'] if k in raw_payload))
         }
 
     # =================================================================

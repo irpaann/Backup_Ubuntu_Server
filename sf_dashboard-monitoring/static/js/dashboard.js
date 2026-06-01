@@ -149,28 +149,10 @@ function getFilterParams() {
 // CHARTS
 // ======================
 
-let chartRequests, chartMethods, chartStatus,chartIPs;
+let chartRequests, chartHourly, chartStatus,chartIPs;
 
 function loadCharts() {
     const params = new URLSearchParams(getFilterParams()).toString();
-
-    // Requests per minute
-    // fetch("/api/stats/requests?" + params)
-    //     .then(res => res.json())
-    //     .then(data => {
-    //         if (chartRequests) chartRequests.destroy();
-    //         chartRequests = new Chart(document.getElementById("chartRequests"), {
-    //             type: "line",
-    //             data: {
-    //                 labels: data.labels,
-    //                 datasets: [{
-    //                     label: "Requests",
-    //                     data: data.values,
-    //                     borderWidth: 2
-    //                 }]
-    //             }
-    //         });
-    //     });
 
         fetch("/api/stats/ips?" + params) // Pastikan endpoint ini tersedia di backend
         .then(res => res.json())
@@ -195,20 +177,32 @@ function loadCharts() {
             });
         });
         
-    // Methods
-    fetch("/api/stats/methods?" + params)
+        // hourly requests
+        fetch("/api/stats/hourly?" + params)
         .then(res => res.json())
         .then(data => {
-            if (chartMethods) chartMethods.destroy();
-            chartMethods = new Chart(document.getElementById("chartMethods"), {
-                type: "bar",
+            if (chartHourly) chartHourly.destroy();
+            chartHourly = new Chart(document.getElementById("chartHourly"), {
+                type: "line", // Menggunakan line chart agar tren naik turun jam sibuk terlihat jelas
                 data: {
-                    labels: data.labels,
+                    labels: data.labels, // ["00:00", "01:00", ... "23:00"]
                     datasets: [{
-                        label: "Total",
+                        label: "Total Requests",
                         data: data.values,
-                        borderWidth: 2
+                        borderColor: "#0d6efd",
+                        backgroundColor: "rgba(13, 110, 253, 0.1)",
+                        fill: true,
+                        tension: 0.4 // Membuat garis melengkung halus
                     }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
                 }
             });
         });
